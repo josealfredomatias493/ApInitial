@@ -5,6 +5,7 @@ namespace ApInitial.Models
 {
     public partial class Role
     {
+        //Este es el modelo de roles
         public Role()
         {
             Usuarios = new HashSet<Usuario>();
