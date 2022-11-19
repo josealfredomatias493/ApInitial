@@ -6,14 +6,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ApInitial.Models
 {
-    public partial class Horario
+    public partial class Roles
     {
         [Key]
-        public int HrCodigo { get; set; }
-        public DateTime HrIncio { get; set; }
-        public DateTime HrFinal { get; set; }
+        public int RlCodigo { get; set; }
+        [Column(TypeName = "varchar(200)")]
+        public string RlNombre { get; set; }
         [Column(TypeName = "varchar(1)")]
-        public string HrEstatus { get; set; }
-        public virtual ICollection<Doctores>? Doctores { get; set; }
+        public string RlEstatus { get; set; }
+        public virtual ICollection<Usuarios>? Usuarios { get; set; }
     }
 }

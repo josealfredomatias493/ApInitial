@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ApInitial.Models;
+using Microsoft.Build.Framework;
 
 namespace ApInitial.Controllers
 {
@@ -13,107 +14,94 @@ namespace ApInitial.Controllers
     [ApiController]
     public class CitasController : ControllerBase
     {
-        private readonly CITASMEDICASContext _context;
+        private readonly CITASMEDICASContext _Context;
 
         public CitasController(CITASMEDICASContext context)
         {
-            _context = context;
+            _Context = context;
         }
-
-        // GET: api/Citas
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Cita>>> GetCitas()
+        public ActionResult<IEnumerable<Citas>> GetCitas()
         {
-            return await _context.Citas.ToListAsync();
-        }
-
-        // GET: api/Citas/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Cita>> GetCita(int id)
-        {
-            var cita = await _context.Citas.FindAsync(id);
-
-            if (cita == null)
-            {
-                return NotFound();
-            }
-
-            return cita;
-        }
-
-        // PUT: api/Citas/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutCita(int id, Cita cita)
-        {
-            if (id != cita.CtCodigo)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(cita).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                return _Context.Citas.ToList();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception ex)
             {
-                if (!CitaExists(id))
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpGet("{id}")]
+        public ActionResult<Citas> GetCitasByID(int id)
+        {
+            try
+            {
+                var Ct = _Context.Citas.Find(id);
+                if (Ct == null)
                 {
                     return NotFound();
                 }
-                else
-                {
-                    throw;
-                }
+                return Ct;
             }
-
-            return NoContent();
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
-        // POST: api/Citas
         [HttpPost]
-        public async Task<ActionResult<Cita>> PostCita(Cita cita)
+        public ActionResult<Citas> PostCitas(Citas citas)
         {
-            _context.Citas.Add(cita);
             try
             {
-                await _context.SaveChangesAsync();
+                _Context.Citas.Add(citas);
+                _Context.SaveChanges();
+                return CreatedAtAction(nameof(GetCitasByID), new { id = citas.CtCodigo }, citas);
             }
-            catch (DbUpdateException)
+            catch (Exception ex)
             {
-                if (CitaExists(cita.CtCodigo))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
+                return BadRequest(ex.Message);
             }
-
-            return CreatedAtAction("GetCita", new { id = cita.CtCodigo }, cita);
         }
-
-        // DELETE: api/Citas/5
+        [HttpPut("{id}")]
+        public ActionResult CitasUpdate(int id, Citas citas)
+        {
+            try
+            {
+                if (id != citas.CtCodigo)
+                {
+                    return BadRequest();
+                }
+                _Context.Entry(citas).State = EntityState.Modified;
+                _Context.SaveChanges();
+                return Ok(citas);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCita(int id)
+        public ActionResult CitasPacientes(int id)
         {
-            var cita = await _context.Citas.FindAsync(id);
-            if (cita == null)
+            try
             {
-                return NotFound();
+                var Ct = _Context.Citas.Find(id);
+                if (Ct == null)
+                {
+                    return NotFound();
+                }
+                _Context.Citas.Remove(Ct);
+                _Context.SaveChanges();
+                return Ok("Registro Cancelado");
             }
-
-            _context.Citas.Remove(cita);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
-        private bool CitaExists(int id)
-        {
-            return _context.Citas.Any(e => e.CtCodigo == id);
-        }
+
     }
 }

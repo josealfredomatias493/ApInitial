@@ -1,30 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using ApInitial.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ApInitial.Models;
 
 namespace ApInitial.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class DoctoresController : ControllerBase
+    public class UsuarioController : Controller
     {
         private readonly CITASMEDICASContext _Context;
-
-        public DoctoresController(CITASMEDICASContext context)
+        public UsuarioController(CITASMEDICASContext context)
         {
             _Context = context;
         }
+
         [HttpGet]
-        public ActionResult<IEnumerable<Doctores>> GetDoctores()
+        public ActionResult<IEnumerable<Usuarios>> GetUsuarios()
         {
             try
             {
-                return _Context.Doctores.ToList();
+                return _Context.Usuarios.ToList();
             }
             catch (Exception ex)
             {
@@ -32,11 +27,11 @@ namespace ApInitial.Controllers
             }
         }
         [HttpGet("{id}")]
-        public ActionResult<Doctores> GetDoctoresByID(int id)
+        public ActionResult<Usuarios> GetUsuariosByID(int id)
         {
             try
             {
-                var Doc = _Context.Doctores.Find(id);
+                var Doc = _Context.Usuarios.Find(id);
                 if (Doc == null)
                 {
                     return NotFound();
@@ -49,13 +44,13 @@ namespace ApInitial.Controllers
             }
         }
         [HttpPost]
-        public ActionResult<Doctores> PostDoctores(Doctores doctores)
+        public ActionResult<Usuarios> PostUsuarios(Usuarios usuarios)
         {
             try
             {
-                _Context.Doctores.Add(doctores);
+                _Context.Usuarios.Add(usuarios);
                 _Context.SaveChanges();
-                return CreatedAtAction(nameof(GetDoctoresByID), new { id = doctores.DocCodigo }, doctores);
+                return CreatedAtAction(nameof(GetUsuariosByID), new { id = usuarios.UserCodigo }, usuarios);
             }
             catch (Exception ex)
             {
@@ -64,17 +59,17 @@ namespace ApInitial.Controllers
         }
 
         [HttpPut("{id}")]
-        public ActionResult DoctoresUpdate(int id, Doctores doctores)
+        public ActionResult UsuariosUpdate(int id, Usuarios usuarios)
         {
             try
             {
-                if (id != doctores.DocCodigo)
+                if (id != usuarios.UserCodigo)
                 {
                     return BadRequest();
                 }
-                _Context.Entry(doctores).State = EntityState.Modified;
+                _Context.Entry(usuarios).State = EntityState.Modified;
                 _Context.SaveChanges();
-                return Ok(doctores);
+                return Ok(usuarios);
             }
             catch (Exception ex)
             {
@@ -82,16 +77,16 @@ namespace ApInitial.Controllers
             }
         }
         [HttpDelete("{id}")]
-        public ActionResult DeletePacientes(int id)
+        public ActionResult DeleteRoles(int id)
         {
             try
             {
-                var Doc = _Context.Doctores.Find(id);
+                var Doc = _Context.Usuarios.Find(id);
                 if (Doc == null)
                 {
                     return NotFound();
                 }
-                _Context.Doctores.Remove(Doc);
+                _Context.Usuarios.Remove(Doc);
                 _Context.SaveChanges();
                 return Ok("Registro Cancelado");
             }
@@ -100,7 +95,5 @@ namespace ApInitial.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
-
     }
 }

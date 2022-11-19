@@ -1,30 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using ApInitial.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ApInitial.Models;
 
 namespace ApInitial.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class DoctoresController : ControllerBase
+    public class HorarioController : Controller
     {
         private readonly CITASMEDICASContext _Context;
-
-        public DoctoresController(CITASMEDICASContext context)
+        public HorarioController(CITASMEDICASContext context)
         {
             _Context = context;
         }
+
         [HttpGet]
-        public ActionResult<IEnumerable<Doctores>> GetDoctores()
+        public ActionResult<IEnumerable<Horario>> GetHorarios()
         {
             try
             {
-                return _Context.Doctores.ToList();
+                return _Context.Horarios.ToList();
             }
             catch (Exception ex)
             {
@@ -32,11 +27,11 @@ namespace ApInitial.Controllers
             }
         }
         [HttpGet("{id}")]
-        public ActionResult<Doctores> GetDoctoresByID(int id)
+        public ActionResult<Horario> GetHorariosByID(int id)
         {
             try
             {
-                var Doc = _Context.Doctores.Find(id);
+                var Doc = _Context.Horarios.Find(id);
                 if (Doc == null)
                 {
                     return NotFound();
@@ -49,13 +44,13 @@ namespace ApInitial.Controllers
             }
         }
         [HttpPost]
-        public ActionResult<Doctores> PostDoctores(Doctores doctores)
+        public ActionResult<Horario> PostHorarios(Horario horario)
         {
             try
             {
-                _Context.Doctores.Add(doctores);
+                _Context.Horarios.Add(horario);
                 _Context.SaveChanges();
-                return CreatedAtAction(nameof(GetDoctoresByID), new { id = doctores.DocCodigo }, doctores);
+                return CreatedAtAction(nameof(GetHorariosByID), new { id = horario.HrCodigo }, horario);
             }
             catch (Exception ex)
             {
@@ -64,17 +59,17 @@ namespace ApInitial.Controllers
         }
 
         [HttpPut("{id}")]
-        public ActionResult DoctoresUpdate(int id, Doctores doctores)
+        public ActionResult HorariosUpdate(int id, Horario horario)
         {
             try
             {
-                if (id != doctores.DocCodigo)
+                if (id != horario.HrCodigo)
                 {
                     return BadRequest();
                 }
-                _Context.Entry(doctores).State = EntityState.Modified;
+                _Context.Entry(horario).State = EntityState.Modified;
                 _Context.SaveChanges();
-                return Ok(doctores);
+                return Ok(horario);
             }
             catch (Exception ex)
             {
@@ -82,16 +77,16 @@ namespace ApInitial.Controllers
             }
         }
         [HttpDelete("{id}")]
-        public ActionResult DeletePacientes(int id)
+        public ActionResult DeleteHorarios(int id)
         {
             try
             {
-                var Doc = _Context.Doctores.Find(id);
+                var Doc = _Context.Horarios.Find(id);
                 if (Doc == null)
                 {
                     return NotFound();
                 }
-                _Context.Doctores.Remove(Doc);
+                _Context.Horarios.Remove(Doc);
                 _Context.SaveChanges();
                 return Ok("Registro Cancelado");
             }
@@ -100,7 +95,5 @@ namespace ApInitial.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
-
     }
 }
