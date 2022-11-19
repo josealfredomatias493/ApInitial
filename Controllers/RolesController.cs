@@ -81,14 +81,14 @@ namespace ApInitial.Controllers
         {
             try
             {
-                var Doc = _Context.Roles.Find(id);
-                if (Doc == null)
+                var R = _Context.Roles.Find(id);
+                if (R == null)
                 {
                     return NotFound();
                 }
-                _Context.Roles.Remove(Doc);
+                _Context.Roles.Remove(R);
                 _Context.SaveChanges();
-                return Ok("Registro Cancelado");
+                return Ok(R);
             }
             catch (Exception ex)
             {

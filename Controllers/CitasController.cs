@@ -94,7 +94,7 @@ namespace ApInitial.Controllers
                 }
                 _Context.Citas.Remove(Ct);
                 _Context.SaveChanges();
-                return Ok("Registro Cancelado");
+                return Ok(Ct);
             }
             catch (Exception ex)
             {

@@ -87,7 +87,7 @@ namespace ApInitial.Controllers
                 }
                 _Context.Pacientes.Remove(Pac);
                 _Context.SaveChanges();
-                return Ok("Registro Cancelado");
+                return Ok(Pac);
             }
             catch (Exception ex)
             {

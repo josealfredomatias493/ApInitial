@@ -93,7 +93,7 @@ namespace ApInitial.Controllers
                 }
                 _Context.Doctores.Remove(Doc);
                 _Context.SaveChanges();
-                return Ok("Registro Cancelado");
+                return Ok(Doc);
             }
             catch (Exception ex)
             {

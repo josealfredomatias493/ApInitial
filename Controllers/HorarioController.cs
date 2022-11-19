@@ -81,14 +81,14 @@ namespace ApInitial.Controllers
         {
             try
             {
-                var Doc = _Context.Horarios.Find(id);
-                if (Doc == null)
+                var ht = _Context.Horarios.Find(id);
+                if (ht == null)
                 {
                     return NotFound();
                 }
-                _Context.Horarios.Remove(Doc);
+                _Context.Horarios.Remove(ht);
                 _Context.SaveChanges();
-                return Ok("Registro Cancelado");
+                return Ok(ht);
             }
             catch (Exception ex)
             {
