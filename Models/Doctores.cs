@@ -18,19 +18,15 @@ namespace ApInitial.Models
         public string? DocTelefono { get; set; }
         [EmailAddress,Column(TypeName = "varchar(200)")]
         public string? DocEmail { get; set; }
+        [ForeignKey("Usuario")]
+        public int UserCodigo { get; set; }
         [Column(TypeName = "varchar(200)")]
         public string DocEspecialidades { get; set; }
         [Column(TypeName = "varchar(1)")]
         public string DocEstatus { get; set; }
-        [Column(TypeName ="varchar(50)")]
-        public string DocUsuario { get; set; }
-        [Column(TypeName = "varchar(50)")]
-        public string DocPassword { get; set; }
-
         [NotMapped]
+        public virtual Usuarios? Usuarios { get; set; }
         public virtual ICollection<Citas>? Citas { get; set; }
         public virtual ICollection<Horario>? Horarios { get; set; }
-
-
     }
 }

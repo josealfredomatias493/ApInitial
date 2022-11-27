@@ -1,25 +1,25 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ApInitial.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ApInitial.Models;
 
 namespace ApInitial.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class DoctoresController : ControllerBase
+    public class RolesController : Controller
     {
         private readonly CITASMEDICASContext _Context;
-
-        public DoctoresController(CITASMEDICASContext context)
+        public RolesController(CITASMEDICASContext context)
         {
             _Context = context;
         }
+
         [HttpGet]
-        public ActionResult<IEnumerable<Doctores>> GetDoctores()
+        public ActionResult<IEnumerable<Roles>> GetRoles()
         {
             try
             {
-                return _Context.Doctores.ToList();
+                return _Context.Roles.ToList();
             }
             catch (Exception ex)
             {
@@ -27,11 +27,11 @@ namespace ApInitial.Controllers
             }
         }
         [HttpGet("{id}")]
-        public ActionResult<Doctores> GetDoctoresByID(int id)
+        public ActionResult<Roles> GetRolesByID(int id)
         {
             try
             {
-                var Doc = _Context.Doctores.Find(id);
+                var Doc = _Context.Roles.Find(id);
                 if (Doc == null)
                 {
                     return NotFound();
@@ -44,13 +44,13 @@ namespace ApInitial.Controllers
             }
         }
         [HttpPost]
-        public ActionResult<Doctores> PostDoctores(Doctores doctores)
+        public ActionResult<Roles> PostRoles(Roles roles)
         {
             try
             {
-                _Context.Doctores.Add(doctores);
+                _Context.Roles.Add(roles);
                 _Context.SaveChanges();
-                return CreatedAtAction(nameof(GetDoctoresByID), new { id = doctores.DocCodigo }, doctores);
+                return CreatedAtAction(nameof(GetRolesByID), new { id = roles.RlCodigo }, roles);
             }
             catch (Exception ex)
             {
@@ -59,17 +59,17 @@ namespace ApInitial.Controllers
         }
 
         [HttpPut("{id}")]
-        public ActionResult DoctoresUpdate(int id, Doctores doctores)
+        public ActionResult RolesUpdate(int id, Roles roles)
         {
             try
             {
-                if (id != doctores.DocCodigo)
+                if (id != roles.RlCodigo)
                 {
                     return BadRequest();
                 }
-                _Context.Entry(doctores).State = EntityState.Modified;
+                _Context.Entry(roles).State = EntityState.Modified;
                 _Context.SaveChanges();
-                return Ok(doctores);
+                return Ok(roles);
             }
             catch (Exception ex)
             {
@@ -77,18 +77,18 @@ namespace ApInitial.Controllers
             }
         }
         [HttpDelete("{id}")]
-        public ActionResult DeletePacientes(int id)
+        public ActionResult DeleteRoles(int id)
         {
             try
             {
-                var Doc = _Context.Doctores.Find(id);
-                if (Doc == null)
+                var R = _Context.Roles.Find(id);
+                if (R == null)
                 {
                     return NotFound();
                 }
-                _Context.Doctores.Remove(Doc);
+                _Context.Roles.Remove(R);
                 _Context.SaveChanges();
-                return Ok(Doc);
+                return Ok(R);
             }
             catch (Exception ex)
             {

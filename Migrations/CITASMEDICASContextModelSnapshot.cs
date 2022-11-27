@@ -22,27 +22,6 @@ namespace ApInitial.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("ApInitial.Models.Admin", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("varchar(50)");
-
-                    b.Property<string>("Usuario")
-                        .IsRequired()
-                        .HasColumnType("varchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Admins");
-                });
-
             modelBuilder.Entity("ApInitial.Models.Citas", b =>
                 {
                     b.Property<int>("CtCodigo")
@@ -58,9 +37,6 @@ namespace ApInitial.Migrations
                     b.Property<string>("CtEstatus")
                         .IsRequired()
                         .HasColumnType("varchar(1)");
-
-                    b.Property<DateTime>("CtHorario")
-                        .HasColumnType("datetime2");
 
                     b.Property<int>("DocCodigo")
                         .HasColumnType("int");
@@ -104,16 +80,11 @@ namespace ApInitial.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(200)");
 
-                    b.Property<string>("DocPassword")
-                        .IsRequired()
-                        .HasColumnType("varchar(50)");
-
                     b.Property<string>("DocTelefono")
                         .HasColumnType("varchar(200)");
 
-                    b.Property<string>("DocUsuario")
-                        .IsRequired()
-                        .HasColumnType("varchar(50)");
+                    b.Property<int>("UserCodigo")
+                        .HasColumnType("int");
 
                     b.HasKey("DocCodigo");
 
@@ -173,20 +144,66 @@ namespace ApInitial.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(200)");
 
-                    b.Property<string>("PacPassword")
-                        .IsRequired()
-                        .HasColumnType("varchar(50)");
-
                     b.Property<string>("PacTelefono")
                         .HasColumnType("varchar(15)");
 
-                    b.Property<string>("PacUsuario")
-                        .IsRequired()
-                        .HasColumnType("varchar(50)");
+                    b.Property<int>("UserCodigo")
+                        .HasColumnType("int");
 
                     b.HasKey("PacCodigo");
 
                     b.ToTable("Pacientes");
+                });
+
+            modelBuilder.Entity("ApInitial.Models.Roles", b =>
+                {
+                    b.Property<int>("RlCodigo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RlCodigo"), 1L, 1);
+
+                    b.Property<string>("RlEstatus")
+                        .IsRequired()
+                        .HasColumnType("varchar(1)");
+
+                    b.Property<string>("RlNombre")
+                        .IsRequired()
+                        .HasColumnType("varchar(200)");
+
+                    b.HasKey("RlCodigo");
+
+                    b.ToTable("Roles");
+                });
+
+            modelBuilder.Entity("ApInitial.Models.Usuarios", b =>
+                {
+                    b.Property<int>("UserCodigo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserCodigo"), 1L, 1);
+
+                    b.Property<int>("RlCodigo")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserContraseña")
+                        .IsRequired()
+                        .HasColumnType("varchar(200)");
+
+                    b.Property<string>("UserEstatus")
+                        .IsRequired()
+                        .HasColumnType("varchar(1)");
+
+                    b.Property<string>("UserNombre")
+                        .IsRequired()
+                        .HasColumnType("varchar(200)");
+
+                    b.HasKey("UserCodigo");
+
+                    b.HasIndex("RlCodigo");
+
+                    b.ToTable("Usuarios");
                 });
 
             modelBuilder.Entity("DoctoresHorario", b =>
@@ -207,13 +224,13 @@ namespace ApInitial.Migrations
             modelBuilder.Entity("ApInitial.Models.Citas", b =>
                 {
                     b.HasOne("ApInitial.Models.Doctores", "Doctores")
-                        .WithMany()
+                        .WithMany("Citas")
                         .HasForeignKey("DocCodigo")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("ApInitial.Models.Pacientes", "Pacientes")
-                        .WithMany()
+                        .WithMany("citas")
                         .HasForeignKey("PacCodigo")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -221,6 +238,17 @@ namespace ApInitial.Migrations
                     b.Navigation("Doctores");
 
                     b.Navigation("Pacientes");
+                });
+
+            modelBuilder.Entity("ApInitial.Models.Usuarios", b =>
+                {
+                    b.HasOne("ApInitial.Models.Roles", "Roles")
+                        .WithMany("Usuarios")
+                        .HasForeignKey("RlCodigo")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Roles");
                 });
 
             modelBuilder.Entity("DoctoresHorario", b =>
@@ -236,6 +264,21 @@ namespace ApInitial.Migrations
                         .HasForeignKey("HorariosHrCodigo")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("ApInitial.Models.Doctores", b =>
+                {
+                    b.Navigation("Citas");
+                });
+
+            modelBuilder.Entity("ApInitial.Models.Pacientes", b =>
+                {
+                    b.Navigation("citas");
+                });
+
+            modelBuilder.Entity("ApInitial.Models.Roles", b =>
+                {
+                    b.Navigation("Usuarios");
                 });
 #pragma warning restore 612, 618
         }
