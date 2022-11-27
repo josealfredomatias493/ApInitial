@@ -50,8 +50,7 @@ namespace ApInitial.Migrations
                 name: "Doctores",
                 columns: table => new
                 {
-                    DocCodigo = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    DocCodigo = table.Column<int>(type: "int", nullable: false),
                     DocNombre = table.Column<string>(type: "varchar(200)", nullable: false),
                     DocApellido = table.Column<string>(type: "varchar(200)", nullable: false),
                     DocTelefono = table.Column<string>(type: "varchar(200)", nullable: true),
@@ -89,8 +88,7 @@ namespace ApInitial.Migrations
                 name: "Pacientes",
                 columns: table => new
                 {
-                    PacCodigo = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PacCodigo = table.Column<int>(type: "int", nullable: false),
                     PacNombre = table.Column<string>(type: "varchar(200)", nullable: false),
                     PacApellido = table.Column<string>(type: "varchar(200)", nullable: false),
                     PacFechaNacimiento = table.Column<DateTime>(type: "datetime2", nullable: false),
