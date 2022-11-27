@@ -21,13 +21,15 @@ namespace ApInitial.Models
         public string? PacEmail { get; set; }
         [Column(TypeName = "varchar(200)")]
         public string PacDireccion { get; set; }
-        [ForeignKey("Usuario")]
-        public int UserCodigo { get; set; }
         [Column(TypeName = "varchar(1)")]
         public string PacEstatus { get; set; }
 
+        [Column(TypeName = "varchar(50)")]
+        public string PacUsuario { get; set; }
+        [Column(TypeName = "varchar(50)")]
+        public string PacPassword { get; set; }
+
         [NotMapped]
-        public virtual Usuarios? usuarios { get; set; }
         public virtual ICollection<Citas>? citas { get; set; }
     }
 }

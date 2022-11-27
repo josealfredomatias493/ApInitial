@@ -48,6 +48,7 @@ namespace ApInitial.Controllers
         {
             try
             {
+                doctores.DocEstatus = "A";
                 _Context.Doctores.Add(doctores);
                 _Context.SaveChanges();
                 return CreatedAtAction(nameof(GetDoctoresByID), new { id = doctores.DocCodigo }, doctores);

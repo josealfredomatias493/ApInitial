@@ -5,47 +5,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ApInitial.Migrations
 {
-    public partial class db : Migration
+    public partial class APPVer2 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-
-            migrationBuilder.CreateTable(
-                name: "Roles",
-                columns: table => new
-                {
-                    RlCodigo = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    RlNombre = table.Column<string>(type: "varchar(200)", nullable: false),
-                    RlEstatus = table.Column<string>(type: "varchar(1)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Roles", x => x.RlCodigo);
-                });
-
-            migrationBuilder.CreateTable(
-           name: "Usuarios",
-           columns: table => new
-           {
-               UserCodigo = table.Column<int>(type: "int", nullable: false)
-                   .Annotation("SqlServer:Identity", "1, 1"),
-               UserNombre = table.Column<string>(type: "varchar(200)", nullable: false),
-               UserContraseña = table.Column<string>(type: "varchar(200)", nullable: false),
-               RlCodigo = table.Column<int>(type: "int", nullable: false),
-               UserEstatus = table.Column<string>(type: "varchar(1)", nullable: false)
-           },
-           constraints: table =>
-           {
-               table.PrimaryKey("PK_Usuarios", x => x.UserCodigo);
-               table.ForeignKey(
-                   name: "FK_Usuarios_Roles_RlCodigo",
-                   column: x => x.RlCodigo,
-                   principalTable: "Roles",
-                   principalColumn: "RlCodigo",
-                   onDelete: ReferentialAction.NoAction);
-           });
-
             migrationBuilder.CreateTable(
                 name: "Doctores",
                 columns: table => new
@@ -56,18 +19,14 @@ namespace ApInitial.Migrations
                     DocApellido = table.Column<string>(type: "varchar(200)", nullable: false),
                     DocTelefono = table.Column<string>(type: "varchar(200)", nullable: true),
                     DocEmail = table.Column<string>(type: "varchar(200)", nullable: true),
-                    UserCodigo = table.Column<int>(type: "int", nullable: false),
                     DocEspecialidades = table.Column<string>(type: "varchar(200)", nullable: false),
-                    DocEstatus = table.Column<string>(type: "varchar(1)", nullable: false)
+                    DocEstatus = table.Column<string>(type: "varchar(1)", nullable: false),
+                    DocUsuario = table.Column<string>(type: "varchar(50)", nullable: false),
+                    DocPassword = table.Column<string>(type: "varchar(50)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Doctores", x => x.DocCodigo);
-                    table.ForeignKey(
-                      name: "FK_Doctores_Usuarios_UserCodigo",
-                      column: x => x.UserCodigo,
-                      principalTable: "Usuarios",
-                      principalColumn: "UserCodigo");
                 });
 
             migrationBuilder.CreateTable(
@@ -97,17 +56,13 @@ namespace ApInitial.Migrations
                     PacTelefono = table.Column<string>(type: "varchar(15)", nullable: true),
                     PacEmail = table.Column<string>(type: "varchar(200)", nullable: true),
                     PacDireccion = table.Column<string>(type: "varchar(200)", nullable: false),
-                    UserCodigo = table.Column<int>(type: "int", nullable: false),
-                    PacEstatus = table.Column<string>(type: "varchar(1)", nullable: false)
+                    PacEstatus = table.Column<string>(type: "varchar(1)", nullable: false),
+                    PacUsuario = table.Column<string>(type: "varchar(50)", nullable: false),
+                    PacPassword = table.Column<string>(type: "varchar(50)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Pacientes", x => x.PacCodigo);
-                    table.ForeignKey(
-                      name: "FK_Pacientes_Usuarios_UserCodigo",
-                      column: x => x.UserCodigo,
-                      principalTable: "Usuarios",
-                      principalColumn: "UserCodigo");
                 });
 
             migrationBuilder.CreateTable(
@@ -125,13 +80,13 @@ namespace ApInitial.Migrations
                         column: x => x.DoctoresDocCodigo,
                         principalTable: "Doctores",
                         principalColumn: "DocCodigo",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_DoctoresHorario_Horarios_HorariosHrCodigo",
                         column: x => x.HorariosHrCodigo,
                         principalTable: "Horarios",
                         principalColumn: "HrCodigo",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -143,7 +98,8 @@ namespace ApInitial.Migrations
                     PacCodigo = table.Column<int>(type: "int", nullable: false),
                     CtDescripcion = table.Column<string>(type: "varchar(200)", nullable: false),
                     DocCodigo = table.Column<int>(type: "int", nullable: false),
-                    CtEstatus = table.Column<string>(type: "varchar(1)", nullable: false)
+                    CtEstatus = table.Column<string>(type: "varchar(1)", nullable: false),
+                    CtHorario = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -153,16 +109,14 @@ namespace ApInitial.Migrations
                         column: x => x.DocCodigo,
                         principalTable: "Doctores",
                         principalColumn: "DocCodigo",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Citas_Pacientes_PacCodigo",
                         column: x => x.PacCodigo,
                         principalTable: "Pacientes",
                         principalColumn: "PacCodigo",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
-
-       
 
             migrationBuilder.CreateIndex(
                 name: "IX_Citas_DocCodigo",
@@ -178,20 +132,6 @@ namespace ApInitial.Migrations
                 name: "IX_DoctoresHorario_HorariosHrCodigo",
                 table: "DoctoresHorario",
                 column: "HorariosHrCodigo");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Usuarios_RlCodigo",
-                table: "Usuarios",
-                column: "RlCodigo");
-            migrationBuilder.CreateIndex(
-                name: "IX_Pacientes_UserCodigo",
-                table: "Pacientes",
-                column: "UserCodigo");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Doctores_UserCodigo",
-                table: "Doctores",
-                column: "UserCodigo");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -203,9 +143,6 @@ namespace ApInitial.Migrations
                 name: "DoctoresHorario");
 
             migrationBuilder.DropTable(
-                name: "Usuarios");
-
-            migrationBuilder.DropTable(
                 name: "Pacientes");
 
             migrationBuilder.DropTable(
@@ -213,9 +150,6 @@ namespace ApInitial.Migrations
 
             migrationBuilder.DropTable(
                 name: "Horarios");
-
-            migrationBuilder.DropTable(
-                name: "Roles");
         }
     }
 }

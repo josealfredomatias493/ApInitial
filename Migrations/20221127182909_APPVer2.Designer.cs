@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApInitial.Migrations
 {
     [DbContext(typeof(CITASMEDICASContext))]
-    [Migration("20221119203732_db")]
-    partial class db
+    [Migration("20221127182909_APPVer2")]
+    partial class APPVer2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -39,6 +39,9 @@ namespace ApInitial.Migrations
                     b.Property<string>("CtEstatus")
                         .IsRequired()
                         .HasColumnType("varchar(1)");
+
+                    b.Property<DateTime>("CtHorario")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("DocCodigo")
                         .HasColumnType("int");
@@ -82,11 +85,16 @@ namespace ApInitial.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(200)");
 
+                    b.Property<string>("DocPassword")
+                        .IsRequired()
+                        .HasColumnType("varchar(50)");
+
                     b.Property<string>("DocTelefono")
                         .HasColumnType("varchar(200)");
 
-                    b.Property<int>("UserCodigo")
-                        .HasColumnType("int");
+                    b.Property<string>("DocUsuario")
+                        .IsRequired()
+                        .HasColumnType("varchar(50)");
 
                     b.HasKey("DocCodigo");
 
@@ -146,66 +154,20 @@ namespace ApInitial.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(200)");
 
+                    b.Property<string>("PacPassword")
+                        .IsRequired()
+                        .HasColumnType("varchar(50)");
+
                     b.Property<string>("PacTelefono")
                         .HasColumnType("varchar(15)");
 
-                    b.Property<int>("UserCodigo")
-                        .HasColumnType("int");
+                    b.Property<string>("PacUsuario")
+                        .IsRequired()
+                        .HasColumnType("varchar(50)");
 
                     b.HasKey("PacCodigo");
 
                     b.ToTable("Pacientes");
-                });
-
-            modelBuilder.Entity("ApInitial.Models.Roles", b =>
-                {
-                    b.Property<int>("RlCodigo")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RlCodigo"), 1L, 1);
-
-                    b.Property<string>("RlEstatus")
-                        .IsRequired()
-                        .HasColumnType("varchar(1)");
-
-                    b.Property<string>("RlNombre")
-                        .IsRequired()
-                        .HasColumnType("varchar(200)");
-
-                    b.HasKey("RlCodigo");
-
-                    b.ToTable("Roles");
-                });
-
-            modelBuilder.Entity("ApInitial.Models.Usuarios", b =>
-                {
-                    b.Property<int>("UserCodigo")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserCodigo"), 1L, 1);
-
-                    b.Property<int>("RlCodigo")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserContraseña")
-                        .IsRequired()
-                        .HasColumnType("varchar(200)");
-
-                    b.Property<string>("UserEstatus")
-                        .IsRequired()
-                        .HasColumnType("varchar(1)");
-
-                    b.Property<string>("UserNombre")
-                        .IsRequired()
-                        .HasColumnType("varchar(200)");
-
-                    b.HasKey("UserCodigo");
-
-                    b.HasIndex("RlCodigo");
-
-                    b.ToTable("Usuarios");
                 });
 
             modelBuilder.Entity("DoctoresHorario", b =>
@@ -226,13 +188,13 @@ namespace ApInitial.Migrations
             modelBuilder.Entity("ApInitial.Models.Citas", b =>
                 {
                     b.HasOne("ApInitial.Models.Doctores", "Doctores")
-                        .WithMany("Citas")
+                        .WithMany()
                         .HasForeignKey("DocCodigo")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("ApInitial.Models.Pacientes", "Pacientes")
-                        .WithMany("citas")
+                        .WithMany()
                         .HasForeignKey("PacCodigo")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -240,17 +202,6 @@ namespace ApInitial.Migrations
                     b.Navigation("Doctores");
 
                     b.Navigation("Pacientes");
-                });
-
-            modelBuilder.Entity("ApInitial.Models.Usuarios", b =>
-                {
-                    b.HasOne("ApInitial.Models.Roles", "Roles")
-                        .WithMany("Usuarios")
-                        .HasForeignKey("RlCodigo")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Roles");
                 });
 
             modelBuilder.Entity("DoctoresHorario", b =>
@@ -266,21 +217,6 @@ namespace ApInitial.Migrations
                         .HasForeignKey("HorariosHrCodigo")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("ApInitial.Models.Doctores", b =>
-                {
-                    b.Navigation("Citas");
-                });
-
-            modelBuilder.Entity("ApInitial.Models.Pacientes", b =>
-                {
-                    b.Navigation("citas");
-                });
-
-            modelBuilder.Entity("ApInitial.Models.Roles", b =>
-                {
-                    b.Navigation("Usuarios");
                 });
 #pragma warning restore 612, 618
         }
