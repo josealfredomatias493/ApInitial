@@ -18,7 +18,10 @@ namespace ApInitial.Models
         public int DocCodigo { get; set; }
         [Column(TypeName = "varchar(1)")]
         public string CtEstatus { get; set; }
-       
+        [Required]
+        public DateTime CtHorarioInicial { get; set; }
+        [Required]
+        public DateTime CtHorarioFinal { get; set; }
         public virtual Doctores? Doctores { get; set; }
         public virtual Pacientes? Pacientes { get; set; }
     }

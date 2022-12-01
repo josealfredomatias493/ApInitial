@@ -20,6 +20,10 @@ namespace ApInitial.Models
         public string? DocEmail { get; set; }
         [ForeignKey("Usuario")]
         public int UserCodigo { get; set; }
+        [Required]
+        public DateTime DocHorarioInicial { get; set; }
+        [Required]
+        public DateTime DocHorarioFinal { get; set; }
         [Column(TypeName = "varchar(200)")]
         public string DocEspecialidades { get; set; }
         [Column(TypeName = "varchar(1)")]
@@ -27,6 +31,5 @@ namespace ApInitial.Models
         [NotMapped]
         public virtual Usuarios? Usuarios { get; set; }
         public virtual ICollection<Citas>? Citas { get; set; }
-        public virtual ICollection<Horario>? Horarios { get; set; }
     }
 }
