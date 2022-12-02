@@ -13,7 +13,9 @@ namespace ApInitial.Models
         [Column(TypeName = "varchar(200)")]
         public string UserNombre { get; set; }
         [Column(TypeName = "varchar(200)")]
-        public string UserPassword { get; set; } 
+        public string UserPassword { get; set; }
+        [Required]
+        public string UserFechaCreacion { get; set; }
         [ForeignKey("Roles")]
         public int RlCodigo { get; set; }
         [Column(TypeName = "varchar(1)")]

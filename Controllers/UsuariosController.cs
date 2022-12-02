@@ -45,9 +45,10 @@ namespace ApInitial.Controllers
         }
         [HttpPost]
         public ActionResult<Usuarios> PostUsuarios(Usuarios usuarios)
-        {
+        {   
             try
             {
+                usuarios.UserFechaCreacion= DateTime.Now.ToString("f");
                 _Context.Usuarios.Add(usuarios);
                 _Context.SaveChanges();
                 return CreatedAtAction(nameof(GetUsuariosByID), new { id = usuarios.UserCodigo }, usuarios);
