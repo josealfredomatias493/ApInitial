@@ -33,7 +33,8 @@ namespace ApInitial.Migrations
                UserNombre = table.Column<string>(type: "varchar(200)", nullable: false),
                UserContraseña = table.Column<string>(type: "varchar(200)", nullable: false),
                RlCodigo = table.Column<int>(type: "int", nullable: false),
-               UserEstatus = table.Column<string>(type: "varchar(1)", nullable: false)
+               UserEstatus = table.Column<string>(type: "varchar(1)", nullable: false),
+               UserFechaCreacion =table.Column<string>(type: "varchar(50)", nullable:false)
            },
            constraints: table =>
            {
