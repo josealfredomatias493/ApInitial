@@ -15,11 +15,12 @@ namespace ApInitial.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Usuarios>> GetUsuarios()
+        public ActionResult<IEnumerable<Usuarios>> GetUsuarios(string A)
         {
             try
             {
-                return _Context.Usuarios.ToList();
+                var variable = (from d in _Context.Usuarios where d.UserEstatus==A select d).ToList();
+                return variable;
             }
             catch (Exception ex)
             {
@@ -82,14 +83,21 @@ namespace ApInitial.Controllers
         {
             try
             {
-                var user = _Context.Usuarios.Find(id);
-                if (user == null)
+                var User = _Context.Usuarios.Find(id);
+                if (User == null)
                 {
                     return NotFound();
                 }
-                _Context.Usuarios.Remove(user);
-                _Context.SaveChanges();
-                return Ok(user);
+                else
+                {
+                    var variable = (from d in _Context.Usuarios where d.UserCodigo == id select d);
+                    foreach (var d in variable)
+                    {
+                        d.UserEstatus = "D";
+                    }
+                    _Context.SaveChanges();
+                }
+                return Ok(User);
             }
             catch (Exception ex)
             {

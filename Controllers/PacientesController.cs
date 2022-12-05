@@ -14,11 +14,12 @@ namespace ApInitial.Controllers
             _Context = context;
         }
         [HttpGet]
-        public ActionResult<IEnumerable<Pacientes>> GetPacientes()
+        public ActionResult<IEnumerable<Pacientes>> GetPacientes(string A)
         {
             try
             {
-                return _Context.Pacientes.ToList();
+                var variable = (from d in _Context.Pacientes where d.PacEstatus == A select d).ToList();
+                return variable;
             }
             catch (Exception ex)
             {
@@ -85,8 +86,15 @@ namespace ApInitial.Controllers
                 {
                     return NotFound();
                 }
-                _Context.Pacientes.Remove(Pac);
-                _Context.SaveChanges();
+                else
+                {
+                    var variable = (from d in _Context.Pacientes where d.PacCodigo == id select d);
+                    foreach (var d in variable)
+                    {
+                        d.PacEstatus = "D";
+                    }
+                    _Context.SaveChanges();
+                }
                 return Ok(Pac);
             }
             catch (Exception ex)
