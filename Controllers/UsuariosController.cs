@@ -65,6 +65,7 @@ namespace ApInitial.Controllers
         {
             try
             {
+                usuarios.UserEstatus="A";
                 if (id != usuarios.UserCodigo)
                 {
                     return BadRequest();

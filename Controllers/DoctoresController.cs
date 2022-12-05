@@ -64,6 +64,7 @@ namespace ApInitial.Controllers
         {
             try
             {
+                doctores.DocEstatus = "A";
                 if (id != doctores.DocCodigo)
                 {
                     return BadRequest();

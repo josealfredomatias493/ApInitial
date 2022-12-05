@@ -63,6 +63,7 @@ namespace ApInitial.Controllers
         {
             try
             {
+                pacientes.PacEstatus = "A";
                 if (id != pacientes.PacCodigo)
                 {
                     return BadRequest();
