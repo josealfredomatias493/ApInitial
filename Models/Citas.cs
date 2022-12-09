@@ -23,6 +23,13 @@ namespace ApInitial.Models
         [Required]
         public DateTime CtHorarioFinal { get; set; }
         public virtual Doctores? Doctores { get; set; }
+        [NotMapped]
+        public string nombreDoctor { get { return Doctores.DocNombre; } }
         public virtual Pacientes? Pacientes { get; set; }
+
+        public Citas()
+        {
+            this.Doctores = new Doctores();
+        }
     }
 }

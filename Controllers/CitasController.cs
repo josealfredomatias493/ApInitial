@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ApInitial.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ApInitial.Controllers
 {
@@ -15,11 +16,13 @@ namespace ApInitial.Controllers
             _Context = context;
         }
         [HttpGet]
-        public ActionResult<IEnumerable<Citas>> GetCitas()
+        public ActionResult<IEnumerable<Citas>> GetCitas(string A)
         {
             try
             {
-                return _Context.Citas.ToList();
+                //Agregar Include para traer datos de doctores (JOIN)
+                var variable = (from d in _Context.Citas.Include(x=> x.Doctores) where d.CtEstatus == A select d).ToList();
+                return variable;
             }
             catch (Exception ex)
             {
@@ -63,6 +66,7 @@ namespace ApInitial.Controllers
         {
             try
             {
+                citas.CtEstatus = "A";
                 if (id != citas.CtCodigo)
                 {
                     return BadRequest();
@@ -81,14 +85,21 @@ namespace ApInitial.Controllers
         {
             try
             {
-                var Ct = _Context.Citas.Find(id);
-                if (Ct == null)
+                var Date = _Context.Citas.Find(id);
+                if (Date == null)
                 {
                     return NotFound();
                 }
-                _Context.Citas.Remove(Ct);
-                _Context.SaveChanges();
-                return Ok(Ct);
+                else
+                {
+                    var variable = (from d in _Context.Citas where d.CtCodigo == id select d);
+                    foreach (var d in variable)
+                    {
+                        d.CtEstatus = "D";
+                    }
+                    _Context.SaveChanges();
+                }
+                return Ok(Date);
             }
             catch (Exception ex)
             {
