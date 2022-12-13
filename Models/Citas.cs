@@ -1,8 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System;
-using System.Collections.Generic;
+﻿using Microsoft.CodeAnalysis;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.InteropServices;
 
 namespace ApInitial.Models
 {
@@ -22,14 +22,12 @@ namespace ApInitial.Models
         public DateTime CtHorarioInicial { get; set; }
         [Required]
         public DateTime CtHorarioFinal { get; set; }
-        public virtual Doctores? Doctores { get; set; }
-        [NotMapped]
-        public string nombreDoctor { get { return Doctores.DocNombre; } }
-        public virtual Pacientes? Pacientes { get; set; }
-
+        public virtual Doctores? Doctores { get; set; }=null;
+        public virtual Pacientes? Pacientes { get; set; } = null;
         public Citas()
         {
-            this.Doctores = new Doctores();
+            Optional<Doctores> Doctores= new Doctores();
+            Optional<Pacientes> Pacientes = new Pacientes();
         }
     }
 }

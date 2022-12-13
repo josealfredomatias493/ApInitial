@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ApInitial.Models;
-using Microsoft.EntityFrameworkCore;
+using System.Runtime.InteropServices;
 
 namespace ApInitial.Controllers
 {
@@ -16,13 +16,20 @@ namespace ApInitial.Controllers
             _Context = context;
         }
         [HttpGet]
-        public ActionResult<IEnumerable<Citas>> GetCitas(string A)
+        public ActionResult<IEnumerable<Citas>> GetCitas(string A, [Optional] int id)
         {
             try
             {
-                //Agregar Include para traer datos de doctores (JOIN)
-                var variable = (from d in _Context.Citas.Include(x=> x.Doctores) where d.CtEstatus == A select d).ToList();
-                return variable;
+                
+                if(id!=0){
+                    var variable = (from d in _Context.Citas.Include(x => x.Doctores).Include(x => x.Pacientes) where d.CtEstatus == A && d.PacCodigo==id || d.DocCodigo==id select d).ToList();
+                    return variable;
+                }
+                else
+                {
+                    var variable = (from d in _Context.Citas.Include(x => x.Doctores).Include(x => x.Pacientes) where d.CtEstatus == A select d).ToList();
+                    return variable;
+                }
             }
             catch (Exception ex)
             {
@@ -52,9 +59,36 @@ namespace ApInitial.Controllers
         {
             try
             {
-                _Context.Citas.Add(citas);
-                _Context.SaveChanges();
-                return CreatedAtAction(nameof(GetCitasByID), new { id = citas.CtCodigo }, citas);
+
+                var horario = (from d in _Context.Citas where d.DocCodigo == citas.DocCodigo && d.CtEstatus=="A" select d);
+                foreach(var d in horario)
+                {
+                    if(citas.CtHorarioInicial > d.CtHorarioInicial && citas.CtHorarioInicial < d.CtHorarioFinal)
+                    {
+                        citas.CtEstatus = "Z";
+                        break;
+                    }
+                    else if (citas.CtHorarioFinal > d.CtHorarioInicial && citas.CtHorarioFinal < d.CtHorarioFinal)
+                    {
+                        citas.CtEstatus = "Z";
+                        break;
+                    }
+                    else
+                    {
+                        citas.CtEstatus = "A";
+                    }
+                }
+                if (citas.CtEstatus == "Z")
+                {
+                    return citas;
+                }
+                else
+                {
+                    _Context.Citas.Add(citas);
+                    _Context.SaveChanges();
+                    return CreatedAtAction(nameof(GetCitasByID), new { id = citas.CtCodigo }, citas);
+                }
+                
             }
             catch (Exception ex)
             {
@@ -71,9 +105,35 @@ namespace ApInitial.Controllers
                 {
                     return BadRequest();
                 }
-                _Context.Entry(citas).State = EntityState.Modified;
-                _Context.SaveChanges();
-                return Ok(citas);
+                var horario = (from d in _Context.Citas where d.DocCodigo == citas.DocCodigo && d.CtEstatus == "A" select d);
+                foreach (var d in horario)
+                {
+                    if (citas.CtHorarioInicial > d.CtHorarioInicial && citas.CtHorarioInicial < d.CtHorarioFinal)
+                    {
+                        citas.CtEstatus = "Z";
+                        break;
+                    }
+                    else if (citas.CtHorarioFinal > d.CtHorarioInicial && citas.CtHorarioFinal < d.CtHorarioFinal)
+                    {
+                        citas.CtEstatus = "Z";
+                        break;
+                    }
+                    else
+                    {
+                        citas.CtEstatus = "A";
+                    }
+                }
+                if (citas.CtEstatus == "Z")
+                {
+                    return BadRequest();
+                }
+                else
+                {
+                    _Context.Entry(citas).State = EntityState.Modified;
+                    _Context.SaveChanges();
+                    return Ok(citas);
+                }
+                
             }
             catch (Exception ex)
             {
