@@ -19,15 +19,15 @@ namespace ApInitial.Controllers
         public ActionResult<IEnumerable<Citas>> GetCitas(string A, [Optional] int id)
         {
             try
-            {
+            { 
                 
                 if(id!=0){
-                    var variable = (from d in _Context.Citas.Include(x => x.Doctores).Include(x => x.Pacientes) where d.CtEstatus == A && d.PacCodigo==id || d.DocCodigo==id select d).ToList();
+                    var variable = (from d in _Context.Citas.Include(x => x.Doctores).Include(x => x.Pacientes) where d.CtEstatus == A && (d.PacCodigo==id || d.DocCodigo==id) select d).OrderBy(x=> x.CtHorarioInicial).ToList();
                     return variable;
                 }
                 else
                 {
-                    var variable = (from d in _Context.Citas.Include(x => x.Doctores).Include(x => x.Pacientes) where d.CtEstatus == A select d).ToList();
+                    var variable = (from d in _Context.Citas.Include(x => x.Doctores).Include(x => x.Pacientes) where d.CtEstatus == A select d).OrderBy(x => x.CtHorarioInicial).ToList();
                     return variable;
                 }
             }
@@ -59,7 +59,13 @@ namespace ApInitial.Controllers
         {
             try
             {
-
+                var horarioFinal= new DateTime(citas.CtHorarioInicial.Year,citas.CtHorarioFinal.Month,citas.CtHorarioInicial.Day,citas.CtHorarioFinal.Hour,citas.CtHorarioFinal.Minute,citas.CtHorarioFinal.Second);
+                citas.CtHorarioFinal = horarioFinal;
+                if (citas.CtHorarioFinal < citas.CtHorarioInicial)
+                {
+                    citas.CtEstatus = "X";
+                    return citas;
+                }
                 var horario = (from d in _Context.Citas where d.DocCodigo == citas.DocCodigo && d.CtEstatus=="A" select d);
                 foreach(var d in horario)
                 {
@@ -100,12 +106,24 @@ namespace ApInitial.Controllers
         {
             try
             {
-                citas.CtEstatus = "A";
                 if (id != citas.CtCodigo)
                 {
                     return BadRequest();
                 }
-                var horario = (from d in _Context.Citas where d.DocCodigo == citas.DocCodigo && d.CtEstatus == "A" select d);
+                else if (citas.CtEstatus == "D")
+                {
+                    citas.CtEstatus = "A";
+                    _Context.Entry(citas).State = EntityState.Modified;
+                    _Context.SaveChanges();
+                    return Ok(citas);
+                }
+                var horarioFinal = new DateTime(citas.CtHorarioInicial.Year, citas.CtHorarioFinal.Month, citas.CtHorarioInicial.Day, citas.CtHorarioFinal.Hour, citas.CtHorarioFinal.Minute, citas.CtHorarioFinal.Second);
+                citas.CtHorarioFinal = horarioFinal;
+                if (citas.CtHorarioFinal < citas.CtHorarioInicial)
+                {
+                    return BadRequest();
+                }
+                var horario = (from d in _Context.Citas where d.DocCodigo == citas.DocCodigo && d.CtEstatus == "A" select d).AsNoTracking();
                 foreach (var d in horario)
                 {
                     if (citas.CtHorarioInicial > d.CtHorarioInicial && citas.CtHorarioInicial < d.CtHorarioFinal)

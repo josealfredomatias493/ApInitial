@@ -49,10 +49,18 @@ namespace ApInitial.Controllers
         {   
             try
             {
-                usuarios.UserFechaCreacion= DateTime.Now.ToString("f");
-                _Context.Usuarios.Add(usuarios);
-                _Context.SaveChanges();
-                return CreatedAtAction(nameof(GetUsuariosByID), new { id = usuarios.UserCodigo }, usuarios);
+                var variable = _Context.Usuarios.FirstOrDefault(x => x.UserNombre.Equals(usuarios.UserNombre));
+                if (variable != null)
+                {
+                    return BadRequest();
+                }
+                else
+                {
+                    usuarios.UserFechaCreacion = DateTime.Now.ToString("f");
+                    _Context.Usuarios.Add(usuarios);
+                    _Context.SaveChanges();
+                    return CreatedAtAction(nameof(GetUsuariosByID), new { id = usuarios.UserCodigo }, usuarios);
+                }
             }
             catch (Exception ex)
             {
@@ -99,6 +107,24 @@ namespace ApInitial.Controllers
                     _Context.SaveChanges();
                 }
                 return Ok(User);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("Login")]
+        public IActionResult Login(UsuariosViewModel user)
+        {
+            try
+            {
+                var usuario = _Context.Usuarios.FirstOrDefault(x => x.UserNombre == user.user && x.UserPassword == user.pass);
+                if (usuario != null)
+                {
+                    return Ok(usuario);
+                }
+                return NotFound();
             }
             catch (Exception ex)
             {
